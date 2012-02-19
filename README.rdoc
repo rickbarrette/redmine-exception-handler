@@ -1,3 +1,6 @@
 = exception_handler
 
-Description goes here
+This plugin allows the Exception Handler Library or any other client application to file new reports via a http post.
+
+When a new report is received, this plugin will automatically search for an existing report.
+If there is an existing report, it will be updated; if not, a new report will be filed.

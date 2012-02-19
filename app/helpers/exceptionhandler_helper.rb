@@ -22,7 +22,7 @@ module ExceptionhandlerHelper
   # Checks the database for exisiting reports
   # @return id report is existing else 0
   def check_for_existing_report
-    bug_id = Tracker.find_by_name("Bug").id
+    bug_id = tracker.id
     issues = Project.find_by_name(params[:app]).issues
     issues.each do |issue|
       if issue.tracker_id == bug_id
@@ -81,7 +81,7 @@ module ExceptionhandlerHelper
   # @return true if new report was filed
   def create_new_report
     issue = Issue.new
-    issue.tracker = Tracker.find_by_name("Bug")
+    issue.tracker = tracker
     issue.subject = params[:msg]
     issue.description = params[:description]
     issue.project = Project.find_by_name(params[:app])
@@ -137,6 +137,20 @@ module ExceptionhandlerHelper
     end
     issue.init_journal(User.anonymous, "Issue updated")
     issue.save
+  end
+  
+  # gets the prodived tracker
+  # if it doesnt exist, defualt to Bug
+  def tracker
+    if(params[:tracker]!= nil)
+      if params[:tracker].length > 0
+        t = Tracker.find_by_name(params[:tracker])
+        if(t != nil)
+          return t
+        end
+      end
+    end
+    return Tracker.find_by_name("Bug")
   end
   
 end #EOF
