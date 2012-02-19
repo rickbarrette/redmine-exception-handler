@@ -87,7 +87,7 @@ module ExceptionhandlerHelper
     issue.project = Project.find_by_name(params[:app])
     issue.start_date = Time.now.localtime.strftime("%Y-%m-%d %T")
     issue.priority = IssuePriority.find_by_name("Normal")
-    issue.author = User.find_by_mail("rickbarrette@gmail.com")
+    issue.author = User.anonymous
     issue.status = IssueStatus.find_by_name("New")
 
     issue.custom_values = [
@@ -108,6 +108,35 @@ module ExceptionhandlerHelper
     custom_value.value = value
     custom_value.customized_type = "Issue"
     return custom_value
+  end
+  
+  # retrives an issue by it's id and updates it
+  # @returns updated issue
+  def update_report(issue_id)
+    issue = Issue.find_by_id(issue_id)
+    if params[:description].length > 0
+      description = issue.description
+      description += "\n\n--- New Description --- \n"
+      description += params[:description]
+      issue.description = description
+    end
+    
+    custom_fields = CustomField
+    issue.custom_field_values.each do |value|
+      case custom_fields.find_by_id(value.custom_field_id).name
+        when "Device"
+          value.value = value.value += "\n"
+          value.value = value.value += params[:device]
+        when "Date"
+          value.value = value.value += "\n"
+          value.value = value.value += params[:date]
+        when "Count"
+          value.value = (value.value.to_i + 1).to_s
+      end
+      value.save
+    end
+    issue.init_journal(User.anonymous, "Issue updated")
+    issue.save
   end
   
 end #EOF
