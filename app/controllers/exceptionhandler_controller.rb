@@ -27,23 +27,30 @@ class ExceptionhandlerController < ApplicationController
   helper :exceptionhandler
   include ExceptionhandlerHelper
   
+  require 'logger'
+  
   def index
-#    @bug_id = Tracker.find_by_name("Bug").id
-#    @issues = Project.find_by_name(params[:app]).issues
-#    @custom_fields = CustomField
-    
+    log = Logger.new('redmine-exceptionhandler-plugin.txt')
+    log.level = Logger::DEBUG
+    log.debug "Loading Index"
+
     if params.size < 8
       @output = "<strong> not enough args </strong>"
+    elsif Project.find_by_name(params[:app]) == nil
+      @output = "No Project Found"
     else
         issue_id = check_for_existing_report
       if issue_id > 0
         # TODO update report
         @output = issue_id
       else
-        if file_new_report
-          @output = "new report filed"
+        #TODO create new report and save
+        issue = create_new_report
+        if issue.valid?
+           issue.save
+           @output = "Report filed, Thank You."
         else
-          @output = "Failed to file report"
+         @output = issue.errors.full_messages
         end
       end
     end

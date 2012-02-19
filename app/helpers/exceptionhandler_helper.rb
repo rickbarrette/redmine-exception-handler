@@ -39,13 +39,11 @@ module ExceptionhandlerHelper
   # @return id of report if matching, else 0
   def check_issue(issue)
     if issue.subject == params[:msg]
-#      if issue.description == params[:description]
-        if check_issue_custom_values(issue)
-          return issue.id
-        end
-#      else
-#        return 0
-#      end
+      if check_issue_custom_values(issue)
+        return issue.id
+      else
+        return 0
+      end
     else
       return 0
     end
@@ -81,18 +79,35 @@ module ExceptionhandlerHelper
   
   # files a new exception report in redmine
   # @return true if new report was filed
-  def file_new_report
+  def create_new_report
     issue = Issue.new
     issue.tracker = Tracker.find_by_name("Bug")
     issue.subject = params[:msg]
     issue.description = params[:description]
     issue.project = Project.find_by_name(params[:app])
-    issue.start_date = Time.now.localtime.strftime("%Y-%m-%d")
+    issue.start_date = Time.now.localtime.strftime("%Y-%m-%d %T")
     issue.priority = IssuePriority.find_by_name("Normal")
     issue.author = User.find_by_mail("rickbarrette@gmail.com")
     issue.status = IssueStatus.find_by_name("New")
-   
-    issue.save
+
+    issue.custom_values = [
+      create_custom_value(CustomField.find_by_name("StackTrace").id, params[:stackTrace]),
+      create_custom_value(CustomField.find_by_name("Cause").id, params[:cause]),
+      create_custom_value(CustomField.find_by_name("Count").id, "1"),
+      create_custom_value(CustomField.find_by_name("Device").id, params[:device]),
+      create_custom_value(CustomField.find_by_name("Version").id, value = params[:version]),
+      create_custom_value(CustomField.find_by_name("Date").id, value = params[:date])
+      ]
+    return issue
+  end
+  
+  # returns a new custom value
+  def create_custom_value(field_id, value)
+    custom_value = CustomValue.new
+    custom_value.custom_field_id = field_id
+    custom_value.value = value
+    custom_value.customized_type = "Issue"
+    return custom_value
   end
   
 end #EOF
