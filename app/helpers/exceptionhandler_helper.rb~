@@ -64,17 +64,13 @@ module ExceptionhandlerHelper
           if value.value == params[:stackTrace]
             count += 1
           end
-        when "Package"
-          if value.value == params[:package]
-            count += 1
-          end
         when "Cause"
           if value.value == params[:cause]
             count += 1
           end
       end
     end
-    if count == 4
+    if count == 3
       return true
     else
       return false
