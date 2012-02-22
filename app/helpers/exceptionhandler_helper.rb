@@ -64,13 +64,17 @@ module ExceptionhandlerHelper
           if value.value == params[:stackTrace]
             count += 1
           end
+        when "Package"
+          if value.value == params[:package]
+            count += 1
+          end
         when "Cause"
           if value.value == params[:cause]
             count += 1
           end
       end
     end
-    if count == 3
+    if count == 4
       return true
     else
       return false
@@ -96,6 +100,7 @@ module ExceptionhandlerHelper
       create_custom_value(CustomField.find_by_name("Count").id, "1"),
       create_custom_value(CustomField.find_by_name("Device").id, params[:device]),
       create_custom_value(CustomField.find_by_name("Version").id, value = params[:version]),
+      create_custom_value(CustomField.find_by_name("Package").id, value = params[:package]),
       create_custom_value(CustomField.find_by_name("Date").id, value = params[:date])
       ]
     return issue
