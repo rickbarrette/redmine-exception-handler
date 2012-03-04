@@ -28,7 +28,7 @@ class ExceptionhandlerController < ApplicationController
   include ExceptionhandlerHelper
   
   def index
-    if params.size < 8
+    if params.size < 9
       @output = "<strong> not enough args </strong>"
     elsif Project.find_by_name(params[:app]) == nil
       @output = "No Project Found"
