@@ -20,33 +20,29 @@
 module ExceptionhandlerHelper
 
   # Checks the database for exisiting reports
-  # @return id report is existing else 0
+  # @return existing issue report if existing
   def check_for_existing_report
     bug_id = tracker.id
     issues = Project.find_by_name(params[:app]).issues
     issues.each do |issue|
       if issue.tracker_id == bug_id
-        id = check_issue(issue)
-        if id > 0
-          return id
+        if check_issue(issue)
+          return issue
         end
       end
     end
-    return 0;
+    return nil;
   end
   
   # checks a specific issue agains params
-  # @return id of report if matching, else 0
+  # @return true if the suppyled issue matches new report args
   def check_issue(issue)
     if issue.subject == params[:msg]
       if check_issue_custom_values(issue)
-        return issue.id
-      else
-        return 0
+        return true
       end
-    else
-      return 0
     end
+    return false
   end
   
   #checks if this issue is a match for params based on it's custom values'
@@ -115,10 +111,9 @@ module ExceptionhandlerHelper
     return custom_value
   end
   
-  # retrives an issue by it's id and updates it
-  # @returns updated issue
-  def update_report(issue_id)
-    issue = Issue.find_by_id(issue_id)
+  # updates the provided issue with the incomming report
+  # @returns true if save is sucessful
+  def update_report(issue)
     if params[:description].length > 0
       description = issue.description
       description += "\n\n--- New Description --- \n"
@@ -141,7 +136,7 @@ module ExceptionhandlerHelper
       value.save
     end
     issue.init_journal(User.anonymous, "Issue updated")
-    issue.save
+    return issue.save
   end
   
   # gets the prodived tracker

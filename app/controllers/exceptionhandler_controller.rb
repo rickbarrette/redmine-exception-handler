@@ -28,27 +28,49 @@ class ExceptionhandlerController < ApplicationController
   include ExceptionhandlerHelper
   
   def index
+    #check the incomming report for completeness
     if params.size < 9
-      @output = "<strong> not enough args </strong>"
+      flash.now[:error] = "Not enough args"
+
+    # check to see if the reported project exists
     elsif Project.find_by_name(params[:app]) == nil
-      @output = "No Project Found"
+      flash.now[:error] = "Project Not Found"
+      @output = params[:app] + " is not a valid project"
+
     else
-      issue_id = check_for_existing_report
-      if issue_id > 0
-        update_report(issue_id)
-        @output = "Updated report"
+    #if we get to this point, then we can try file the incomming report
+
+      #check to see if the report exists
+      # if we get a report back, then let update it
+      issue = check_for_existing_report
+      if issue != nil
+        if update_report(issue)
+          flash.now[:notice] = "Updated report"
+        end
+
       else
+        #if we get to this point, the report doesn't exist.
+        #lets file a new one
         issue = create_new_report
         if issue.valid?
            issue.save
-           @output = "New report filed"
+           flash.now[:notice] = "New report filed"
         else
          @output = issue.errors.full_messages
         end
+
+        #TODO generate link to issue
+#	link_to("My Link", {
+#                    :controller =&gt; 'issue',
+#                    :action =&gt; issue_id,
+#                    :host =&gt; Setting.host_name,
+#                    :protocol =&gt; Setting.protocol
+#                   })
+#	link_to(issue)
+    #rescue RuntimeError
+    #  @output = "ERROR"
       end
     end
-    rescue RuntimeError
-      @output = "ERROR"
   end
   
 end #EOF
