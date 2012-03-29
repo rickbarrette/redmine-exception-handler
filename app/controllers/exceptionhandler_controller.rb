@@ -28,9 +28,12 @@ class ExceptionhandlerController < ApplicationController
   include ExceptionhandlerHelper
   
   def index
+    
     #check the incomming report for completeness
     if params.size < 9
-      flash.now[:error] = "Not enough args"
+      if params.size != 2 
+        flash.now[:alert] = "Not enough args"
+      end
 
     # check to see if the reported project exists
     elsif Project.find_by_name(params[:app]) == nil
@@ -45,7 +48,7 @@ class ExceptionhandlerController < ApplicationController
       issue = check_for_existing_report
       if issue != nil
         if update_report(issue)
-          flash.now[:notice] = "Updated report"
+          flash.now[:success] = "Updated report"
         end
 
       else
@@ -54,9 +57,9 @@ class ExceptionhandlerController < ApplicationController
         issue = create_new_report
         if issue.valid?
            issue.save
-           flash.now[:notice] = "New report filed"
+           flash.now[:success] = "New report filed"
         else
-         @output = issue.errors.full_messages
+          flash.now[:error] = issue.errors.full_messages
         end
 
         #TODO generate link to issue
