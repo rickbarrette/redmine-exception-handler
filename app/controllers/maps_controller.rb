@@ -1,5 +1,5 @@
-# routes.rb
-# @date Apr 19, 2012
+# maps_controller.rb
+# @date Apr 25, 2012
 # @author ricky barrette <rickbarrette@gmail.com>
 #
 # Copyright 2012 Rick Barrette
@@ -20,7 +20,11 @@
 # When a new exception report is recieved, it will be compared to existing bug issues.
 # If there is a match, the existing issue will be updated
 # if not a new bug issue will be generated.
-ActionController::Routing::Routes.draw do |map|
-  map.connect '/exceptionhandler', :controller => 'exceptionhandler', :action => 'index'
-  map.connect '/maps', :controller => 'maps', :action => 'index'
-end
+class MapsController < ApplicationController
+  unloadable
+  
+  def index
+    
+  end
+  
+end #EOF
