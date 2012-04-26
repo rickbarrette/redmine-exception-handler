@@ -1,5 +1,5 @@
-# maps_controller.rb
-# @date Apr 25, 2012
+# auth_helper.rb
+# @date Apr 26, 2012
 # @author ricky barrette <rickbarrette@gmail.com>
 #
 # Copyright 2012 Rick Barrette
@@ -16,16 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This controller class will handle map management
-class MapsController < ApplicationController
-  unloadable
-  
-  include AuthHelper
+#this helper contains auth methods
+module AuthHelper
 
-  before_filter :require_user
-  
-  def index
-    
+  def require_user
+    if !User.current.logged?
+      render :file => "public/401.html.erb", :status => :unauthorized, :layout =>true
+    end
   end
-  
-end #EOF
+end
