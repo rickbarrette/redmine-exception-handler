@@ -25,7 +25,8 @@ class Map < ActiveRecord::Base
   
   require 'digest/sha1'
 
-  validates_presence_of :map, :package, :build
+  validates_uniqueness_of :map
+  validates_presence_of :map, :build, :package
 
   def self.save(p)
     map = Map.new
