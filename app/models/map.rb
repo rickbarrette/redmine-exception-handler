@@ -25,13 +25,38 @@ class Map < ActiveRecord::Base
   
   require 'digest/sha1'
 
-  def self.save(upload)
+  validates_presence_of :map, :package, :build
+
+  def self.save(p)
+    map = Map.new
+    if !p[:package].to_s.empty?
+      map.package = p[:package]
+    end
+    
+    if !p[:build].to_s.empty?
+      map.build = p[:build]
+    end
+
+    upload = p[:upload]
     name =  upload['datafile'].original_filename
     directory = "public/data"
     sha1 = Digest::SHA1.hexdigest name
-    # create the file path
-    path = File.join(directory, sha1)
-    # write the file
-    File.open(path, "wb") { |f| f.write(upload['datafile'].read) }
+
+    map.map = sha1
+
+    if map.save
+      
+      # create the file path
+      path = File.join(directory, sha1)
+      # write the file
+      File.open(path, "wb") { |f| f.write(upload['datafile'].read) }
+    else
+      return false
+    end
+    
+  end
+
+  def getMap()
+
   end
 end

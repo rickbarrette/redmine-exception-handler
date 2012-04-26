@@ -32,8 +32,8 @@ class MapsController < ApplicationController
   end
   
   def uploadFile
-    post = Map.save(params[:upload])
-    session[:uploadSuccess] = true
+    post = Map.save(params)
+    session[:uploadSuccess] = post
     redirect_to(:back)
   end
   
