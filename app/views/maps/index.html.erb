@@ -15,4 +15,15 @@
   <br/>
   <%= file_field 'upload', 'datafile' %></p>
   <%= submit_tag "Upload" %>
+
+  <br/>
+  <br/>
+  <strong>Current Maps:</strong>
+
+  <% Map.all.each do |map| %>
+
+    <br/>
+    <%= map[:package] %> <%= map[:build] %>
+
+  <% end %>
 <%= form_tag %>
