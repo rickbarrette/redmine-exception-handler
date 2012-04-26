@@ -22,4 +22,16 @@
 # if not a new bug issue will be generated.
 class Map < ActiveRecord::Base
   unloadable
+  
+  require 'digest/sha1'
+
+  def self.save(upload)
+    name =  upload['datafile'].original_filename
+    directory = "public/data"
+    sha1 = Digest::SHA1.hexdigest name
+    # create the file path
+    path = File.join(directory, sha1)
+    # write the file
+    File.open(path, "wb") { |f| f.write(upload['datafile'].read) }
+  end
 end

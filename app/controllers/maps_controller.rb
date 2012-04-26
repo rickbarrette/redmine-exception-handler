@@ -28,4 +28,9 @@ class MapsController < ApplicationController
     
   end
   
+  def uploadFile
+    post = Map.save(params[:upload])
+    render :text => "File has been uploaded successfully"
+  end
+  
 end #EOF

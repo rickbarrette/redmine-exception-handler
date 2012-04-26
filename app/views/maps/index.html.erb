@@ -1,8 +1,7 @@
 <h1>Exception Handler Maps</h1>
 <br/>
 
-<!-- TODO uploader action -->
-<form action="XXX" method="post" enctype="multipart/form-data">
+<%= form_tag ({:action => 'uploadFile'}, :multipart => true) %>
   <label for="package">Package:</label>
   <br/>
   <input name="package" id="package" type="text" maxlength="5555500"  size=50%/>
@@ -11,10 +10,9 @@
   <br/>
   <input name="build" id="build" type="text" maxlength="5555500"  size=50%/>
   <br/>
-  <label for="file">File:</label>
+  <%= form_tag ({:action => 'uploadFile'}, :multipart => true) %>
+  <p><label for="upload_file">Select File</label> : 
   <br/>
-  <input type="file" name="file" id="file" accept="text/plain" /> 
-  <br/>
-  <br/>
-  <input type="submit" name="submit" value="Submit" />
-</form>
+  <%= file_field 'upload', 'datafile' %></p>
+  <%= submit_tag "Upload" %>
+<%= form_tag %>

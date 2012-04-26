@@ -23,4 +23,5 @@
 ActionController::Routing::Routes.draw do |map|
   map.connect '/exceptionhandler', :controller => 'exceptionhandler', :action => 'index'
   map.connect '/maps', :controller => 'maps', :action => 'index'
+  map.connect '/uploadFile', :controller => 'maps', :action => 'uploadFile'
 end
