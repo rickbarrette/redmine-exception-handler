@@ -40,21 +40,27 @@ class Map < ActiveRecord::Base
 
     upload = p[:upload]
     name =  upload['datafile'].original_filename
-    directory = "public/data"
-    sha1 = Digest::SHA1.hexdigest name
+    directory = "public/maps"
 
-    map.map = sha1
-
-    if map.save
-      
-      # create the file path
-      path = File.join(directory, sha1)
-      # write the file
-      File.open(path, "wb") { |f| f.write(upload['datafile'].read) }
-    else
-      return false
+    if !File.directory? directory
+      Dir.mkdir(directory, 0700)
     end
-    
+
+    sha1 = Digest::SHA1.new
+
+    # create the file path
+    path = File.join(directory, name)
+    # write the file
+    File.open(path, "wb") { |f| 
+      data = upload['datafile'].read
+      f.write(data)
+      sha1.update(data)
+    } 
+
+    File.rename(directory+'/'+name, directory +'/'+ sha1.hexdigest)
+
+    map.map = sha1.hexdigest
+    map.save
   end
 
   def getMap()
