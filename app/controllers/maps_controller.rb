@@ -25,12 +25,16 @@ class MapsController < ApplicationController
   before_filter :require_user
   
   def index
-    
+    if session[:uploadSuccess] 
+      flash.now[:notice] = "File has been uploaded successfully"
+      session[:uploadSuccess] = false
+    end
   end
   
   def uploadFile
     post = Map.save(params[:upload])
-    render :text => "File has been uploaded successfully"
+    session[:uploadSuccess] = true
+    redirect_to(:back)
   end
   
 end #EOF
