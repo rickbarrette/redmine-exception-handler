@@ -23,7 +23,7 @@
 # if not a new bug issue will be generated.
 class ExceptionhandlerController < ApplicationController
   unloadable
-  
+    
   helper :exceptionhandler
   include ExceptionhandlerHelper
   
@@ -34,7 +34,7 @@ class ExceptionhandlerController < ApplicationController
       if params.size != 2 
         flash.now[:alert] = "Not enough args"
       end
-
+      
     # check to see if the reported project exists
     elsif Project.find_by_name(params[:app]) == nil
       flash.now[:error] = "Project Not Found"
@@ -42,6 +42,10 @@ class ExceptionhandlerController < ApplicationController
 
     else
     #if we get to this point, then we can try file the incomming report
+      
+      #lets deobfuscate the traces
+      params[:stackTrace] = deobfuscate(params[:stackTrace], params[:package], params[:version])
+      params[:cause] = deobfuscate(params[:cause], params[:package], params[:version])
 
       #check to see if the report exists
       # if we get a report back, then let update it

@@ -1,7 +1,7 @@
 # exceptionhandler_helper.rb
 # @date Feb. 15, 2012
 # @author ricky barrette <rickbarrette@gmail.com>
-# @authro twenty codes <twentycodes@gmail.com>
+# @author twenty codes <twentycodes@gmail.com>
 #
 # Copyright 2012 Rick Barrette
 #
@@ -18,8 +18,10 @@
 # limitations under the License.
 
 module ExceptionhandlerHelper
+  
+  require 'tempfile'
 
-  # Checks the database for exisiting reports
+  # Checks the database for existing reports
   # @return existing issue report if existing
   def check_for_existing_report
     bug_id = tracker.id
@@ -34,8 +36,8 @@ module ExceptionhandlerHelper
     return nil;
   end
   
-  # checks a specific issue agains params
-  # @return true if the suppyled issue matches new report args
+  # checks a specific issue against parameters
+  # @return true if the supplied issue matches new report args
   def check_issue(issue)
     if issue.subject == params[:msg]
       if check_issue_custom_values(issue)
@@ -111,8 +113,8 @@ module ExceptionhandlerHelper
     return custom_value
   end
   
-  # updates the provided issue with the incomming report
-  # @returns true if save is sucessful
+  # updates the provided issue with the incoming report
+  # @returns true if save is successful
   def update_report(issue)
     if params[:description].length > 0
       description = issue.description
@@ -139,8 +141,8 @@ module ExceptionhandlerHelper
     return issue.save
   end
   
-  # gets the prodived tracker
-  # if it doesnt exist, defualt to Bug
+  # gets the provided tracker
+  # if it doesn't exist, default to Bug
   def tracker
     if(params[:tracker]!= nil)
       if params[:tracker].length > 0
@@ -152,5 +154,35 @@ module ExceptionhandlerHelper
     end
     return Tracker.find_by_name("Bug")
   end
-  
-end #EOF
+ 
+  # de obfuscates a trace of there is a map available
+  def deobfuscate (stacktrace, package, build)
+      
+      map = Map.find_by_package(package)
+      
+      if map != nil
+        map = map.find_by_build(build)
+      end
+
+      if map != nil
+    
+        # Save the stack trace to a temp file
+        # might need to add ruby path
+        tf = Tempfile.open('stacktrace')
+        tf.puts stacktrace
+
+        #retrace
+        Dir.chdir("#{RAILS_ROOT}/vendor/plugins/redmine-exception-handler/public/proguard") do
+          Open3.popen3("bin/retrace.sh #{RAILS_ROOT}/public/maps/#{map} #{RAILS_ROOT}/#{tf.path}") do |stdrin, stdout, stderr|
+            output = stderr.read
+          end
+        end
+
+        tf.close!
+        retrun output
+      else
+        return stacktrace
+      end
+  end
+
+end
