@@ -48,7 +48,7 @@ class ExceptionhandlerController < ApplicationController
       issue = check_for_existing_report
       if issue != nil
         if update_report(issue)
-          flash.now[:notice] = "Updated report"
+          flash.now[:notice] = "Updated report: ##{issue.id}"
         end
 
       else
@@ -57,7 +57,7 @@ class ExceptionhandlerController < ApplicationController
         issue = create_new_report
         if issue.valid?
            issue.save
-           flash.now[:notice] = "New report filed"
+           flash.now[:notice] = "New report filed: ##{issue.id}"
         else
           flash.now[:error] = issue.errors.full_messages
         end
