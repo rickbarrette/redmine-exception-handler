@@ -1,29 +1,9 @@
 <h1>Exception Handler Maps</h1>
 <br/>
-
-<%= form_tag ({:action => 'uploadFile'}, :multipart => true) %>
-  <label for="package">Package:</label>
-  <br/>
-  <input name="package" id="package" type="text" maxlength="5555500"  size=50%/>
-  <br/>
-  <label for="package">Build:</label>
-  <br/>
-  <input name="build" id="build" type="text" maxlength="5555500"  size=50%/>
-  <br/>
-  <%= form_tag ({:action => 'uploadFile'}, :multipart => true) %>
-  <p><label for="upload_file">Select File</label> : 
-  <br/>
-  <%= file_field 'upload', 'datafile' %></p>
-  <%= submit_tag "Upload" %>
+<br/>
+<strong>Current Maps:</strong>
+<% Map.all.each do |map| %>
 
   <br/>
-  <br/>
-  <strong>Current Maps:</strong>
-
-  <% Map.all.each do |map| %>
-
-    <br/>
-    <%= map[:package] %> <%= map[:build] %>
-
-  <% end %>
-<%= form_tag %>
+  <%= map[:package] %> <%= map[:build] %> <%= link_to "Delete", "maps/delete/#{map[:map]}" %> 
+<% end %>

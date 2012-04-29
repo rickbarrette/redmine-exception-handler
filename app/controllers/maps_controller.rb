@@ -25,16 +25,32 @@ class MapsController < ApplicationController
   before_filter :require_user
   
   def index
-    if session[:uploadSuccess] 
-      flash.now[:notice] = "File has been uploaded successfully"
-      session[:uploadSuccess] = false
-    end
+    
   end
   
   def uploadFile
     post = Map.save(params)
     session[:uploadSuccess] = post
     redirect_to(:back)
+  end
+
+  def deleteMap
+    map = Map.find_by_map(params[:map])
+    if map != nil
+      map.destroy
+      directory = "public/maps"
+      File.delete("#{RAILS_ROOT}/public/maps/#{params[:map]}")
+      flash.now[:notice] = "Map deleted successfully"
+    else
+      flash.now[:error] = "No Map Found"
+    end
+  end
+
+  def new
+    if session[:uploadSuccess]
+      flash.now[:notice] = "File has been uploaded successfully"
+      session[:uploadSuccess] = false
+    end
   end
   
 end #EOF

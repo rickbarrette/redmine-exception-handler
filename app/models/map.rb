@@ -62,8 +62,4 @@ class Map < ActiveRecord::Base
     map.map = sha1.hexdigest
     map.save
   end
-
-  def getMap()
-
-  end
 end
