@@ -63,7 +63,8 @@ class ExceptionhandlerController < ApplicationController
            issue.save
            flash.now[:notice] = "New report filed: ##{issue.id}"
         else
-          flash.now[:error] = issue.errors.full_messages
+          flash.now[:error] = "There was an error with filing this report"
+          @output = issue.errors.full_messages
         end
 
         #TODO generate link to issue
