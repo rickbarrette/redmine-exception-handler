@@ -135,7 +135,6 @@ module ExceptionhandlerHelper
         when "Count"
           value.value = (value.value.to_i + 1).to_s
       end
-      value.save
     end
     issue.init_journal(User.anonymous, "Issue updated")
     return issue.save
