@@ -158,31 +158,38 @@ module ExceptionhandlerHelper
   # de obfuscates a trace of there is a map available
   def deobfuscate (stacktrace, package, build)
       
-      map = Map.find_by_package(package)
+    map = find_map(package, build)
       
-      if map != nil
-        map = map.find_by_build(build)
-      end
-
-      if map != nil
+    if map != nil
     
-        # Save the stack trace to a temp file
-        # might need to add ruby path
-        tf = Tempfile.open('stacktrace')
-        tf.puts stacktrace
+      # Save the stack trace to a temp file
+      # might need to add ruby path
+      tf = Tempfile.open('stacktrace')
+      tf.puts stacktrace
 
-        #retrace
-        Dir.chdir("#{RAILS_ROOT}/vendor/plugins/redmine-exception-handler/public/proguard") do
-          Open3.popen3("bin/retrace.sh #{RAILS_ROOT}/public/maps/#{map} #{RAILS_ROOT}/#{tf.path}") do |stdrin, stdout, stderr|
-            output = stderr.read
-          end
+      output = ""
+      #retrace
+      Dir.chdir("#{RAILS_ROOT}/vendor/plugins/redmine-exception-handler/public/proguard") do
+        Open3.popen3("bin/retrace.sh #{RAILS_ROOT}/public/maps/#{map.map} #{tf.path}") do |stdrin, stdout, stderr|
+          output += stderr.read
         end
-
         tf.close!
-        retrun output
-      else
-        return stacktrace
+        return output
       end
+    else
+      return stacktrace
+    end
   end
 
+  # find a proguard map if it exists
+  def find_map (package, build)
+    Map.all.each do |map|
+      if(map.package == package)
+        if map.build == build
+          return map
+        end
+      end
+    end
+    return nil
+  end
 end
