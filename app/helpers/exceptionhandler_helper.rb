@@ -145,6 +145,7 @@ module ExceptionhandlerHelper
   def tracker
     if(params[:tracker]!= nil)
       if params[:tracker].length > 0
+        Tracker.verify_active_connections!
         t = Tracker.find_by_name(params[:tracker])
         if(t != nil)
           return t
@@ -156,7 +157,6 @@ module ExceptionhandlerHelper
  
   # de obfuscates a trace of there is a map available
   def deobfuscate (stacktrace, package, build)
-      
     map = find_map(package, build)
       
     if map != nil
@@ -164,17 +164,17 @@ module ExceptionhandlerHelper
       # Save the stack trace to a temp file
       # might need to add ruby path
       tf = Tempfile.open('stacktrace')
-      tf.puts stacktrace
-
+      path = tf.path
+      tf.print(stacktrace)
+      tf.flush
       output = ""
       #retrace
-      Dir.chdir("#{RAILS_ROOT}/vendor/plugins/redmine-exception-handler/public/proguard") do
-        Open3.popen3("bin/retrace.sh #{RAILS_ROOT}/public/maps/#{map.map} #{tf.path}") do |stdrin, stdout, stderr|
-          output += stderr.read
-        end
-        tf.close!
-        return output
+      Open3.popen3("#{RAILS_ROOT}/vendor/plugins/redmine-exception-handler/public/proguard/bin/retrace.sh #{RAILS_ROOT}/public/maps/#{map.map} #{path}") do |stdrin, stdout, stderr|
+        output += stdout.read
+        output += stderr.read
       end
+      tf.close
+      return output
     else
       return stacktrace
     end
