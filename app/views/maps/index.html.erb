@@ -3,7 +3,8 @@
 <br/>
 <strong>Current Maps:</strong>
 <% Map.all.each do |map| %>
-
   <br/>
-  <%= map[:package] %> <%= map[:build] %> <%= link_to "Delete", "maps/delete/#{map[:map]}" %> 
+  <div>
+    <%= map[:package] %> <%= map[:build] %> <%= button_to "Delete", "delete/#{map[:map]}", :confirm => "Are you sure?" %>
+  </div>
 <% end %>
