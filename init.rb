@@ -7,5 +7,5 @@ Redmine::Plugin.register :redmine_exception_handler do
   version '0.1.0'
   url 'http://example.com/redmine/exceptionhandler'
   author_url 'http://rickbarrette.dyndns.org'
-  menu :top_menu, :maps, { :controller => 'maps', :action => 'index' }, :caption => 'Maps', :before => :help
+  menu :top_menu, :maps, { :controller => 'maps', :action => 'index' }, :caption => 'Maps', :before => :help, :if => Proc.new { User.current.logged? }
 end
