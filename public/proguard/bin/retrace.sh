@@ -9,4 +9,4 @@
 
 PROGUARD_HOME=`dirname "$0"`/..
 
-/opt/java/jre/bin/java -jar $PROGUARD_HOME/lib/retrace.jar "$@"
+/usr/bin/java -jar $PROGUARD_HOME/lib/retrace.jar "$@"
