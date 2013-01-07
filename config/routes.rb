@@ -20,10 +20,16 @@
 # When a new exception report is recieved, it will be compared to existing bug issues.
 # If there is a match, the existing issue will be updated
 # if not a new bug issue will be generated.
-ActionController::Routing::Routes.draw do |map|  
-  map.connect '/exceptionhandler', :controller => 'exceptionhandler', :action => 'index'
-  map.connect '/exceptionhandler/maps', :controller => 'maps', :action => 'index'
-  map.connect '/uploadFile', :controller => 'maps', :action => 'uploadFile'
-  map.connect '/exceptionhandler/maps/delete/:map', :controller => 'maps', :action => 'deleteMap'
-  map.connect '/exceptionhandler/maps/new', :controller => 'maps', :action => 'new'
+if Rails::VERSION::MAJOR >= 3
+	#RedmineApp::Application.routes.draw do
+		#match 'exceptionhandler', :to => 'exceptionhandler#index', :via => [:get, :post]
+	#end
+else
+	ActionController::Routing::Routes.draw do |map|  
+		map.connect '/exceptionhandler', :controller => 'exceptionhandler', :action => 'index'
+		map.connect '/exceptionhandler/maps', :controller => 'maps', :action => 'index'
+		map.connect '/uploadFile', :controller => 'maps', :action => 'uploadFile'
+		map.connect '/exceptionhandler/maps/delete/:map', :controller => 'maps', :action => 'deleteMap'
+		map.connect '/exceptionhandler/maps/new', :controller => 'maps', :action => 'new'
+	end
 end
