@@ -21,9 +21,13 @@
 # If there is a match, the existing issue will be updated
 # if not a new bug issue will be generated.
 if Rails::VERSION::MAJOR >= 3
-	#RedmineApp::Application.routes.draw do
-		#match 'exceptionhandler', :to => 'exceptionhandler#index', :via => [:get, :post]
-	#end
+	RedmineApp::Application.routes.draw do
+		match 'exceptionhandler', :to => 'exceptionhandler#index', :via => [:get, :post]
+		match '/exceptionhandler/maps', :to => 'maps#index', :via => [:get, :post]
+		match '/uploadFile', :to => 'maps#uploadFile', :via => :post
+		match '/exceptionhandler/maps/delete/:map', :to => 'maps#deleteMap', :via => :post
+		match '/exceptionhandler/maps/new', :to => 'maps#new', :via => [:get, :post]
+	end
 else
 	ActionController::Routing::Routes.draw do |map|  
 		map.connect '/exceptionhandler', :controller => 'exceptionhandler', :action => 'index'

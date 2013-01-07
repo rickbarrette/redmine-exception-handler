@@ -1,5 +1,5 @@
 <h1>Exception Handler Map Uploader</h1>
-<%= form_tag ({:action => 'uploadFile'}, :multipart => true) %>
+<%= form_tag({:action => :uploadFile}, :multipart => true) do %> 
 <label for="package">Package:</label>
   <br/>
   <input name="package" id="package" type="text" maxlength="5555500"  size=50%/>
@@ -8,9 +8,9 @@
   <br/>
   <input name="build" id="build" type="text" maxlength="5555500"  size=50%/>
   <br/>
-  <%= form_tag ({:action => 'uploadFile'}, :multipart => true) %>
   <p><label for="upload_file">Select File</label> :
   <br/>
   <%= file_field 'upload', 'datafile' %></p>
   <%= submit_tag "Upload" %>
+  <% end %>
 <%= form_tag %>
