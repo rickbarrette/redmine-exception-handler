@@ -25,7 +25,7 @@ if Rails::VERSION::MAJOR >= 3
 		match 'exceptionhandler', :to => 'exceptionhandler#index', :via => [:get, :post]
 		match '/exceptionhandler/maps', :to => 'maps#index', :via => [:get, :post]
 		match '/uploadFile', :to => 'maps#uploadFile', :via => :post
-		match '/exceptionhandler/maps/delete/:map', :to => 'maps#deleteMap', :via => :post
+		match '/exceptionhandler/delete/:map', :to => 'maps#deleteMap', :via => :post
 		match '/exceptionhandler/maps/new', :to => 'maps#new', :via => [:get, :post]
 	end
 else

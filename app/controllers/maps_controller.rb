@@ -39,7 +39,7 @@ class MapsController < ApplicationController
     if map != nil
       map.destroy
       directory = "public/maps"
-      File.delete("#{RAILS_ROOT}/public/maps/#{params[:map]}")
+      File.delete("#{Rails.root}/public/maps/#{params[:map]}")
       flash.now[:notice] = "Map deleted successfully"
     else
       flash.now[:error] = "No Map Found"
